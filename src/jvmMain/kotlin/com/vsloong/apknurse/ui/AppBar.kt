@@ -69,13 +69,23 @@ fun BottomBar() {
 }
 
 @Composable
-fun LeftBar() {
+fun LeftBar(
+    onFolderClick: () -> Unit = {},
+    folderSelected: Boolean,
+) {
     Column(
         modifier = Modifier.fillMaxHeight()
             .width(appBarSize)
             .background(color = appBarColor)
+            .padding(vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        BarMenu(
+            iconPath = "icons/bar_left_folder.svg",
+            selected = folderSelected,
+            onClick = onFolderClick,
+        )
     }
 }
 

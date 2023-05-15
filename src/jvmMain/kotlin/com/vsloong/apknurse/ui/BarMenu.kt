@@ -2,6 +2,7 @@ package com.vsloong.apknurse.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -35,12 +36,20 @@ private fun PreviewBarMenu() {
 fun BarMenu(
     iconPath: String,
     enabled: Boolean = true,
+    selected: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Box(
-        modifier = Modifier.size(32.dp)
-            .clip(RoundedCornerShape(4.dp))
+        modifier = Modifier.size(30.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(
+                color = if (selected) {
+                    Color(0xff3266cc)
+                } else {
+                    Color.Transparent
+                }
+            )
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
@@ -52,7 +61,7 @@ fun BarMenu(
     ) {
         Image(
             modifier = Modifier.fillMaxSize()
-                .padding(6.dp),
+                .padding(4.dp),
             painter = painterResource(iconPath),
             contentDescription = "",
         )
