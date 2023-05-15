@@ -6,7 +6,7 @@ import localJdGuiJarPath
 /**
  * 使用JD-GUI的用例
  */
-class JavaDecompilerUseCase {
+class JdGuiUseCase {
 
     /**
      * 会直接启动jd-gui的UI工具

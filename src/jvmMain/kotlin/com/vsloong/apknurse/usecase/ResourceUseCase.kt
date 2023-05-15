@@ -93,13 +93,25 @@ class ResourceUseCase {
         //如果是压缩包，那么解压到本地
         val localFileName = localFile.name
         if (localFileName.endsWith(".zip")) {
+
+            val zipDecompressDirPath = localLibsDirPath() +
+                File.separator + localFileName.replace(".zip", "")
+
             decompressByZip(
                 zipFilePath = localFilePath,
-                outputDirPath = localLibsDirPath()
-                    + File.separator + localFileName.replace(".zip", "")
+                outputDirPath = zipDecompressDirPath
             )
+
+            // 循环其中的相关文件，给予可执行权限
+            val zipDecompressDir = File(zipDecompressDirPath)
+            zipDecompressDir.walk().forEach {
+                if (it.isFile && it.name.endsWith(".sh")) {
+                    it.setExecutable(true)
+                }
+            }
+
         } else {
-            //给予文件可执行权限
+            // 给予文件可执行权限
             localFile.setExecutable(true)
         }
     }

@@ -54,15 +54,25 @@ fun localWorkspaceDirPath(): String {
     }
 
     return FileSystemView.getFileSystemView().defaultDirectory.absolutePath +
-        "${File.separator}dirName"
+        File.separator + dirName
 }
 
 /**
  * 本地缓存的资源相关目录
+ * localWorkspace/libs
  */
 fun localLibsDirPath(): String {
     return localWorkspaceDirPath() +
         File.separator + "libs"
+}
+
+/**
+ * 本地缓存的临时相关目录
+ * localWorkspace/temp
+ */
+fun localTempDirPath(): String {
+    return localWorkspaceDirPath() +
+        File.separator + "temp"
 }
 
 /**

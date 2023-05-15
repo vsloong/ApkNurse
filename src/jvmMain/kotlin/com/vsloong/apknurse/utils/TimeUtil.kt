@@ -20,3 +20,10 @@ fun loggerTimeMillis(): String {
 fun fileTimeMillis(): String {
     return fileFormatter.format(System.currentTimeMillis())
 }
+
+/**
+ * 格式化输入的毫秒时间
+ */
+fun fileTimeMillis(timeMillis: Long): String {
+    return fileFormatter.format(timeMillis)
+}

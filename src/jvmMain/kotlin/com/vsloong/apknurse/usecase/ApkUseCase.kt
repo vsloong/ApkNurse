@@ -1,6 +1,6 @@
 package com.vsloong.apknurse.usecase
 
-import com.vsloong.apknurse.bean.ApkBasicBean
+import com.vsloong.apknurse.bean.ApkBasicInfo
 import com.vsloong.apknurse.utils.decompressByZip
 import com.vsloong.apknurse.utils.logger
 import com.vsloong.apknurse.utils.runCMD
@@ -14,17 +14,17 @@ class ApkUseCase {
     /**
      * 从apk获取信息
      */
-    fun getApkInfo(apkPath: String): ApkBasicBean {
-        val apkBasicBean = ApkBasicBean()
+    fun getApkInfo(apkPath: String): ApkBasicInfo {
+        val apkBasicInfo = ApkBasicInfo()
         runCMD(
             localAapt2Path(),
             "dump",
             "badging",
             apkPath,
             onLine = {
-                getApkInfoFromLine(it, apkBasicBean)
+                getApkInfoFromLine(it, apkBasicInfo)
             })
-        return apkBasicBean
+        return apkBasicInfo
     }
 
     /**
@@ -44,9 +44,9 @@ class ApkUseCase {
     /**
      * 从命令行输出的信息中获取apk信息
      */
-    fun getApkInfoFromLine(
+    private fun getApkInfoFromLine(
         string: String,
-        apkBasicBean: ApkBasicBean
+        apkBasicInfo: ApkBasicInfo
     ) {
 
         /**
@@ -69,15 +69,15 @@ class ApkUseCase {
 
             val packageName = subInfo(info[1])
             logger("当前的包名是：${packageName}")
-            apkBasicBean.packageName = packageName
+            apkBasicInfo.packageName = packageName
 
             val versionCode = subInfo(info[2])
             logger("当前的版本号是：${versionCode}")
-            apkBasicBean.versionCode = versionCode
+            apkBasicInfo.versionCode = versionCode
 
             val versionName = subInfo(info[3])
             logger("当前的版本名是：${versionName}")
-            apkBasicBean.versionName = versionName
+            apkBasicInfo.versionName = versionName
 
         }
         //例如：application: label='JumpHacker' icon='res/mipmap-anydpi-v26/ic_launcher.xml'
@@ -85,7 +85,7 @@ class ApkUseCase {
         else if (string.startsWith("application-label:")) {
             val appName = subInfo(string)
             logger("当前的应用名是：${appName}")
-            apkBasicBean.appName = appName
+            apkBasicInfo.appName = appName
         }
     }
 }

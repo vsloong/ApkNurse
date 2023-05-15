@@ -7,21 +7,19 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.ui.BottomBar
 import com.vsloong.apknurse.ui.LeftBar
 import com.vsloong.apknurse.ui.RightBar
 import com.vsloong.apknurse.ui.TopBar
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
 import com.vsloong.apknurse.usecase.*
-import com.vsloong.apknurse.utils.fileTimeMillis
 import com.vsloong.apknurse.utils.ioScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -37,7 +35,7 @@ fun AppFrame(
         Column(
             modifier = Modifier.fillMaxSize()
                 .clip(RoundedCornerShape(8.dp))
-                .border(width = 1.dp, color = Color(0xff393b40))
+                .border(width = 2.dp, color = Color(0xff393b40), shape = RoundedCornerShape(8.dp))
                 .background(color = appBackgroundColor),
             verticalArrangement = Arrangement.spacedBy(1.dp)
         ) {
@@ -88,20 +86,16 @@ fun AppTest() {
                 text = "解压APK文件",
                 onClick = {
                     ioScope.launch {
-                        val apkFilePath = "D:\\ApkNurse\\app-debug.apk"
+                        val apkFilePath = localTempDirPath() + File.separator + "app-release-unsigned.apk"
 
                         val useCase = ApkUseCase()
                         val apkInfo = useCase.getApkInfo(apkFilePath)
 
-                        val outDirName = apkInfo.packageName +
-                            "_${apkInfo.versionCode}" +
-                            "_${apkInfo.versionName}" +
-                            "_${fileTimeMillis()}"
+                        NurseManager.updateApkNurseInfo(apkInfo)
 
                         useCase.decompressApk(
                             apkFilePath = apkFilePath,
-                            outputDirPath = localProjectsDirPath()
-                                + File.separator + outDirName
+                            outputDirPath = NurseManager.getApkNurseInfo().getDecompressDirPath()
                         )
                     }
                 }
@@ -111,32 +105,14 @@ fun AppTest() {
                 text = "Dex文件转Jar文件",
                 onClick = {
                     ioScope.launch {
-                        val dexFilePath =
-                            "D:\\ApkNurse\\projects\\com.example.recompositionsamle_1_1.0_2023_05_14_14_45_29_832\\classes4.dex"
 
-                        val outJarFilePath =
-                            "D:\\ApkNurse\\projects\\classes4.dex.jar"
+                        val dexPath = NurseManager.getApkNurseInfo().getDecompressDirPath()
+                        val outDirPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
 
                         val dexUseCase = DexUseCase()
                         dexUseCase.dex2jar(
-                            dexFilePath = dexFilePath,
-                            outJarFilePath = outJarFilePath
-                        )
-                    }
-                }
-            )
-
-            MyButton(
-                text = "使用JD-GUi查看Jar文件",
-                onClick = {
-                    ioScope.launch {
-
-                        val outJarFilePath =
-                            "D:\\ApkNurse\\projects\\classes4.dex.jar"
-
-                        val jdUseCase = JavaDecompilerUseCase()
-                        jdUseCase.viewJar(
-                            jarFilePath = outJarFilePath
+                            dexPath = dexPath,
+                            outDirPath = outDirPath
                         )
                     }
                 }
@@ -146,15 +122,14 @@ fun AppTest() {
                 text = "Jar文件反编译为Java文件",
                 onClick = {
                     ioScope.launch {
-                        val outJarFilePath =
-                            "D:\\ApkNurse\\projects\\classes4.dex.jar"
+                        val outJarPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
 
-                        val outJavaDir = "D:\\ApkNurse\\projects\\java"
+                        val outJavaDirPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
 
-                        val procyonUseCase = ProcyonUseCase()
-                        procyonUseCase.decompile(
-                            jarFilePath = outJarFilePath,
-                            outDirPath = outJavaDir
+                        val jar2JavaUseCase = Jar2JavaUseCase()
+                        jar2JavaUseCase.jar2java(
+                            jarPath = outJarPath,
+                            outDirPath = outJavaDirPath
                         )
                     }
                 }
