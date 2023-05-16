@@ -1,6 +1,7 @@
 package com.vsloong.apknurse.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vsloong.apknurse.manager.NurseManager
+import com.vsloong.apknurse.ui.theme.randomComposeColor
 import com.vsloong.apknurse.ui.theme.textColor
 import com.vsloong.apknurse.usecase.ApkUseCase
 import com.vsloong.apknurse.usecase.DexUseCase
@@ -33,9 +35,9 @@ private fun MyButton(
 ) {
     Box(
         modifier = Modifier.wrapContentWidth()
-            .height(30.dp)
+            .height(28.dp)
             .clip(RoundedCornerShape(50))
-            .background(color = Color.Blue)
+            .border(width = 2.dp, color = randomComposeColor(), shape = RoundedCornerShape(50))
             .padding(horizontal = 16.dp)
             .clickable {
                 onClick()
@@ -52,85 +54,34 @@ private fun MyButton(
 
 @Composable
 fun AppTest() {
-    MaterialTheme {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
 
-            MyButton(
-                text = "拷贝资源文件到本机",
-                onClick = {
-                    ioScope.launch {
-                        val resourceUseCase = ResourceUseCase()
-                        resourceUseCase.copyLibsToLocal()
-                    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        MyButton(
+            text = "拷贝资源文件到本机",
+            onClick = {
+                ioScope.launch {
+                    val resourceUseCase = ResourceUseCase()
+                    resourceUseCase.copyLibsToLocal()
                 }
-            )
+            }
+        )
 
-            MyButton(
-                text = "解压APK文件",
-                onClick = {
-                    ioScope.launch {
-                        val apkFilePath = localTempDirPath() + File.separator + "app-release-unsigned.apk"
-
-                        val useCase = ApkUseCase()
-                        val apkInfo = useCase.getApkInfo(apkFilePath)
-
-                        NurseManager.updateApkNurseInfo(apkInfo)
-
-                        useCase.decompressApk(
-                            apkFilePath = apkFilePath,
-                            outputDirPath = NurseManager.getApkNurseInfo().getDecompressDirPath()
-                        )
-                    }
+        MyButton(
+            text = "生成项目结构",
+            onClick = {
+                ioScope.launch {
+                    NurseManager.createProjectTree(
+                        File("/Users/dragon/ApkNurse/projects/com.example.composesample_1_2023_05_16_20_43_18_608")
+                    )
                 }
-            )
-
-            MyButton(
-                text = "Dex文件转Jar文件",
-                onClick = {
-                    ioScope.launch {
-
-                        val dexPath = NurseManager.getApkNurseInfo().getDecompressDirPath()
-                        val outDirPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
-
-                        val dexUseCase = DexUseCase()
-                        dexUseCase.dex2jar(
-                            dexPath = dexPath,
-                            outDirPath = outDirPath
-                        )
-                    }
-                }
-            )
-
-            MyButton(
-                text = "Jar文件反编译为Java文件",
-                onClick = {
-                    ioScope.launch {
-                        val outJarPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
-
-                        val outJavaDirPath = NurseManager.getApkNurseInfo().getDecompileDirPath()
-
-                        val jar2JavaUseCase = Jar2JavaUseCase()
-                        jar2JavaUseCase.jar2java(
-                            jarPath = outJarPath,
-                            outDirPath = outJavaDirPath
-                        )
-                    }
-                }
-            )
-
-            MyButton(
-                text = "生成项目结构树",
-                onClick = {
-                    ioScope.launch {
-
-                        NurseManager.createProjectTree()
-                    }
-                }
-            )
-        }
+            }
+        )
     }
+
 }

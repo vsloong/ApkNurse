@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -13,9 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.ui.*
+import com.vsloong.apknurse.ui.drag.DropHerePanel
 import com.vsloong.apknurse.ui.panel.EditPanel
 import com.vsloong.apknurse.ui.panel.ProjectPanel
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
+import com.vsloong.apknurse.ui.theme.randomComposeColor
+import com.vsloong.apknurse.utils.logger
 
 
 fun main() = application {
@@ -36,6 +40,7 @@ fun main() = application {
         state = windowState
     ) {
         AppFrame(
+            composeWindow = window,
             onMinClick = {
                 windowState.isMinimized = true
             },
@@ -61,10 +66,12 @@ fun main() = application {
  */
 @Composable
 fun AppFrame(
+    composeWindow: ComposeWindow,
     onMinClick: () -> Unit,
     onMaxOrNormalClick: () -> Unit,
     onExitClick: () -> Unit,
-    onWindowPositionChange: (Float, Float) -> Unit
+    onWindowPositionChange: (Float, Float) -> Unit,
+    editContent: String = NurseManager.codeEditContent.value
 ) {
     MaterialTheme {
         Column(
@@ -111,16 +118,30 @@ fun AppFrame(
                             ProjectPanel(modifier = Modifier.width(320.dp))
                         }
 
-                        // 代码编辑区域
-                        EditPanel(
-                            modifier = Modifier.fillMaxSize()
-                                .weight(1f)
-                                .background(color = appBackgroundColor)
-                                .padding(2.dp),
-                        )
+                        if (editContent.isEmpty()) {
+                            // 拖动文件到此
+                            DropHerePanel(
+                                modifier = Modifier.fillMaxSize()
+                                    .weight(1f),
+                                composeWindow = composeWindow,
+                                onFileDrop = {
+                                    NurseManager.onDragFile(it)
+                                }
+                            )
+                        } else {
+                            // 代码编辑区域
+                            EditPanel(
+                                modifier = Modifier.fillMaxSize()
+                                    .weight(1f)
+                                    .background(color = appBackgroundColor)
+                                    .padding(2.dp),
+                                editContent = editContent
+                            )
+                        }
                     }
-
                     // 底部的控制台区域
+
+
                 }
 
                 // 右侧功能栏

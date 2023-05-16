@@ -22,12 +22,20 @@ data class ApkNurseInfo(
         return "noApkInfo"
     }
 
+
+    /**
+     * 获得该工程的工程目录
+     */
+    fun getCurrentProjectDirPath(): String {
+        return localProjectsDirPath() +
+            File.separator + getCurrentProjectName()
+    }
+
     /**
      * 获取APK文件经过解压后的工程目录地址
      */
     fun getDecompressDirPath(): String {
-        return localProjectsDirPath() +
-            File.separator + getCurrentProjectName() +
+        return getCurrentProjectDirPath() +
             File.separator + "decompress"
     }
 
@@ -35,17 +43,23 @@ data class ApkNurseInfo(
      * 获取APK文件经过ApkTool反编译后的工程目录地址
      */
     fun getDecodeDirPath(): String {
-        return localProjectsDirPath() +
-            File.separator + getCurrentProjectName() +
+        return getCurrentProjectDirPath() +
             File.separator + "decode"
     }
 
     /**
-     * 获取Dex文件反编译为jar文件，再反编译为java文件的文件夹
+     * 获取Dex文件反编译为jar文件后的文件夹
      */
-    fun getDecompileDirPath(): String {
-        return localProjectsDirPath() +
-            File.separator + getCurrentProjectName() +
-            File.separator + "decompile"
+    fun getDecompiledJarDirPath(): String {
+        return getCurrentProjectDirPath() +
+            File.separator + "decompiled_jar"
+    }
+
+    /**
+     * 获取jar文件反编译为java文件后的文件夹
+     */
+    fun getDecompiledJavaDirPath(): String {
+        return getCurrentProjectDirPath() +
+            File.separator + "decompiled_java"
     }
 }

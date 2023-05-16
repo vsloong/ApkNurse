@@ -12,8 +12,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,16 +114,45 @@ private fun ProjectItem(
 
         Spacer(modifier = Modifier.width((item.depth * 16).dp))
 
+        // 文件夹才有箭头选项
+        if (item.isDir) {
+            Image(
+                painter = painterResource(resourcePath = "icons/arrow_right.svg"),
+                contentDescription = "",
+                modifier = Modifier.size(10.dp)
+                    .rotate(
+                        if (item.selected) {
+                            90f
+                        } else {
+                            0f
+                        }
+                    )
+            )
+        }
+
         Image(
             painter = painterResource(
-                resourcePath = if (item.name.endsWith(".java")) {
-                    "icons/file_type_java.svg"
+                resourcePath = if (item.isDir) {
+                    "icons/file_type_folder.svg"
                 } else {
-                    "icons/bar_left_folder.svg"
+                    if (item.name.endsWith(".java")) {
+                        "icons/file_type_java.svg"
+                    } else if (item.name.endsWith(".png")
+                        || item.name.endsWith(".webp")
+                        || item.name.endsWith(".jpg")
+                    ) {
+                        "icons/file_type_image.svg"
+                    } else if (item.name.endsWith(".xml")) {
+                        "icons/file_type_xml.svg"
+                    }  else if (item.name.endsWith(".smali")) {
+                        "icons/file_type_smali.svg"
+                    } else {
+                        "icons/file_type_unknown.svg"
+                    }
                 }
             ),
             contentDescription = "",
-            modifier = Modifier.size(14.dp)
+            modifier = Modifier.size(16.dp)
         )
 
         Text(
@@ -136,7 +167,7 @@ private fun ProjectItem(
                 FontWeight.Bold
             } else {
                 FontWeight.Normal
-            }
+            },
         )
     }
 }

@@ -5,7 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import com.vsloong.apknurse.bean.ApkBasicInfo
 import com.vsloong.apknurse.bean.ApkNurseInfo
 import com.vsloong.apknurse.bean.FolderItemInfo
+import com.vsloong.apknurse.usecase.ApkUseCase
+import com.vsloong.apknurse.usecase.DexUseCase
+import com.vsloong.apknurse.usecase.HackUseCase
+import com.vsloong.apknurse.usecase.Jar2JavaUseCase
+import com.vsloong.apknurse.utils.ioScope
 import com.vsloong.apknurse.utils.logger
+import kotlinx.coroutines.launch
 import java.io.File
 
 object NurseManager {
@@ -42,13 +48,10 @@ object NurseManager {
     /**
      * 创建项目结构树
      */
-    fun createProjectTree() {
-
-        val file = File("/Users/dragon/ApkNurse/projects/com.example.composesample_1_2023_05_15_12_03_34_879/decompile")
-//        val file = File("/Users/dragon/ApkNurse/temp/folder0")
+    fun createProjectTree(dir: File) {
 
         val list = mutableListOf<FolderItemInfo>()
-        file.walk()
+        dir.walk()
             .onEnter {
                 logger("onEnter -> ${it.name}")
                 it.isDirectory
@@ -96,7 +99,7 @@ object NurseManager {
                 // 该项的位置
                 val index = showFolderList.indexOf(item)
 
-                showFolderList[index].selected = false
+                showFolderList[index] = showFolderList[index].copy(selected = false)
                 showFolderList.removeIf {
 
                     // 所有以该地址开头的都要折叠
@@ -128,7 +131,7 @@ object NurseManager {
                 val index = showFolderList.indexOf(item)
 
                 // 选中当前文件夹，并展开
-                showFolderList[index].selected = true
+                showFolderList[index] = showFolderList[index].copy(selected = true)
                 showFolderList.addAll(index + 1, listFilter)
             }
         }
@@ -137,9 +140,7 @@ object NurseManager {
         else {
             createCodeEditString(item)
         }
-
     }
-
 
     /**
      * 获取文件的字符串信息
@@ -154,8 +155,63 @@ object NurseManager {
 
         val fileName = codeFile.name
 
-        if (fileName.endsWith(".java")) {
+        if (fileName.endsWith(".java") ||
+            fileName.endsWith(".xml") ||
+            fileName.endsWith(".smali")
+        ) {
             codeEditContent.value = codeFile.readText(charset = Charsets.UTF_8)
+        }
+    }
+
+    /**
+     * 拖拽的文件
+     */
+    fun onDragFile(files: List<File>) {
+
+        val apk = files.firstOrNull() {
+            it.name.endsWith(".apk")
+        } ?: return
+
+        ioScope.launch {
+
+            val apkFilePath = apk.absolutePath
+
+            val apkUseCase = ApkUseCase()
+            val apkInfo = apkUseCase.getApkInfo(apkFilePath)
+            updateApkNurseInfo(apkInfo)
+
+            // 解压APK
+            apkUseCase.decompressApk(
+                apkFilePath = apkFilePath,
+                outputDirPath = getApkNurseInfo().getDecompressDirPath()
+            )
+
+            // 反编译dex文件
+            val dexUseCase = DexUseCase()
+            dexUseCase.dex2jar(
+                dexPath = getApkNurseInfo().getDecompressDirPath(),
+                outDirPath = getApkNurseInfo().getDecompiledJarDirPath()
+            )
+
+            // 反编译jar文件
+            val jar2JavaUseCase = Jar2JavaUseCase()
+            jar2JavaUseCase.jar2java(
+                jarPath = getApkNurseInfo().getDecompiledJarDirPath(),
+                outDirPath = getApkNurseInfo().getDecompiledJavaDirPath()
+            )
+
+            // 解码APK
+            val hackUseCase = HackUseCase()
+            hackUseCase.decodeApk(
+                apkPath = apkFilePath,
+                decodeDirPath = getApkNurseInfo().getDecodeDirPath()
+            )
+
+            // 生成项目目录
+            createProjectTree(
+                File(getApkNurseInfo().getCurrentProjectDirPath())
+            )
+
         }
     }
 }

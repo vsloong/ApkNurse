@@ -12,6 +12,4 @@ fun main() {
 //        zipFilePath = currentFile.absolutePath,
 //        outputDirPath = "E:\\ApkTook\\zip"
 //    )
-
-    NurseManager.createProjectTree()
 }
