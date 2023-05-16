@@ -65,6 +65,7 @@ fun BottomBar() {
             .background(color = appBarColor)
     ) {
 
+        AppTest()
     }
 }
 

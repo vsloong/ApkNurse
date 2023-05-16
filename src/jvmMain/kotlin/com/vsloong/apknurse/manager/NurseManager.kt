@@ -22,6 +22,11 @@ object NurseManager {
     private val allFolderList = mutableListOf<FolderItemInfo>()
     val showFolderList = mutableStateListOf<FolderItemInfo>()
 
+    /**
+     * 代码编辑区域
+     */
+    val codeEditContent = mutableStateOf("")
+
 
     private val apkNurseInfo = mutableStateOf(ApkNurseInfo())
 
@@ -130,8 +135,27 @@ object NurseManager {
 
         // 如果是文件
         else {
-
+            createCodeEditString(item)
         }
 
+    }
+
+
+    /**
+     * 获取文件的字符串信息
+     */
+    private fun createCodeEditString(item: FolderItemInfo) {
+        val codeFile = File(item.parent, item.name)
+
+        if (!codeFile.isFile) {
+            logger("Not a file : ${codeFile.absolutePath}")
+            return
+        }
+
+        val fileName = codeFile.name
+
+        if (fileName.endsWith(".java")) {
+            codeEditContent.value = codeFile.readText(charset = Charsets.UTF_8)
+        }
     }
 }

@@ -20,3 +20,5 @@ val appTopBarColor = Color(0xff3c3f41)
 val appBarColor = Color(0xff2b2d30)
 
 val textColor = Color(0xffdfe1e5)
+
+val codeTextColor = Color(0xFFBCBEC4)

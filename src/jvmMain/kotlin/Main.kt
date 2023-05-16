@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.ui.*
+import com.vsloong.apknurse.ui.panel.EditPanel
 import com.vsloong.apknurse.ui.panel.ProjectPanel
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
 
@@ -110,8 +111,13 @@ fun AppFrame(
                             ProjectPanel(modifier = Modifier.width(320.dp))
                         }
 
-                        // 文件编辑区域
-                        AppTest()
+                        // 代码编辑区域
+                        EditPanel(
+                            modifier = Modifier.fillMaxSize()
+                                .weight(1f)
+                                .background(color = appBackgroundColor)
+                                .padding(2.dp),
+                        )
                     }
 
                     // 底部的控制台区域

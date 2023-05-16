@@ -16,12 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.vsloong.apknurse.bean.FolderItemInfo
 import com.vsloong.apknurse.manager.NurseManager
+import com.vsloong.apknurse.ui.scroll.ScrollPanel
 import com.vsloong.apknurse.ui.theme.appBarColor
-import com.vsloong.apknurse.ui.theme.randomComposeColor
 import com.vsloong.apknurse.ui.theme.textColor
 
 /**
@@ -56,73 +55,40 @@ fun ProjectPanel(
         }
 
 
-        val horizontalState = rememberScrollState()
-        val verticalState = rememberLazyListState()
+        val horizontalScrollState = rememberScrollState()
+        val verticalScrollState = rememberLazyListState()
+
 
         // 工程树结构
-        Column(
+        ScrollPanel(
             modifier = Modifier.weight(1f)
                 .background(color = appBarColor)
-                .padding(2.dp)
+                .padding(2.dp),
+            horizontalScrollStateAdapter = rememberScrollbarAdapter(horizontalScrollState),
+            verticalScrollStateAdapter = rememberScrollbarAdapter(verticalScrollState)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                horizontalArrangement = Arrangement.End,
-            ) {
-
-                LazyColumn(
+            LazyColumn(
 //                verticalArrangement = Arrangement.spacedBy(4.dp), // 设置后会导致VerticalScrollbar的显示异常
-                    modifier = Modifier.weight(1f)
-                        .fillMaxHeight()
-                        .horizontalScroll(horizontalState),
-                    state = verticalState,
-                    contentPadding = PaddingValues(4.dp)
-                ) {
-                    itemsIndexed(
-                        items = folderList,
-                        key = { index, item ->
-                            item.parent + item.name
-                        }
-                    ) { index, item ->
-                        ProjectItem(
-                            item = item,
-                            index = index,
-                            onClick = {
-                                NurseManager.clickFolderItem(it)
-                            }
-                        )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .horizontalScroll(horizontalScrollState),
+                state = verticalScrollState,
+            ) {
+                itemsIndexed(
+                    items = folderList,
+                    key = { index, item ->
+                        item.parent + item.name
                     }
+                ) { index, item ->
+                    ProjectItem(
+                        item = item,
+                        index = index,
+                        onClick = {
+                            NurseManager.clickFolderItem(it)
+                        }
+                    )
                 }
-
-                VerticalScrollbar(
-                    adapter = rememberScrollbarAdapter(verticalState),
-                    style = ScrollbarStyle(
-                        minimalHeight = 16.dp,
-                        thickness = 8.dp,
-                        shape = RoundedCornerShape(4.dp),
-                        hoverDurationMillis = 300,
-                        unhoverColor = Color.Black.copy(alpha = 0.20f),
-                        hoverColor = Color.Black.copy(alpha = 0.50f)
-                    ),
-                    modifier = Modifier.fillMaxHeight()
-                )
             }
-
-            HorizontalScrollbar(
-                adapter = rememberScrollbarAdapter(horizontalState),
-                style = ScrollbarStyle(
-                    minimalHeight = 16.dp,
-                    thickness = 8.dp,
-                    shape = RoundedCornerShape(4.dp),
-                    hoverDurationMillis = 300,
-                    unhoverColor = Color.Black.copy(alpha = 0.20f),
-                    hoverColor = Color.Black.copy(alpha = 0.50f)
-                ),
-                modifier = Modifier.fillMaxWidth()
-                    .background(color = appBarColor)
-            )
         }
     }
 }
