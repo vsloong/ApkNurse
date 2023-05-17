@@ -13,13 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.vsloong.apknurse.bean.FolderItemInfo
+import com.vsloong.apknurse.bean.FileItemInfo
+import com.vsloong.apknurse.bean.action.ProjectPanelAction
+import com.vsloong.apknurse.bean.state.ProjectPanelState
 import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.ui.scroll.ScrollPanel
 import com.vsloong.apknurse.ui.theme.appBarColor
@@ -32,7 +32,8 @@ import com.vsloong.apknurse.ui.theme.textColor
 @Composable
 fun ProjectPanel(
     modifier: Modifier = Modifier,
-    folderList: SnapshotStateList<FolderItemInfo> = NurseManager.showFolderList
+    projectPanelAction: ProjectPanelAction = NurseManager.projectPanelViewModel.projectPanelAction,
+    projectPanelState: ProjectPanelState = NurseManager.projectPanelViewModel.projectPanelState.value
 ) {
     Column(
         modifier = modifier
@@ -45,14 +46,23 @@ fun ProjectPanel(
             modifier = Modifier.fillMaxWidth()
                 .height(40.dp)
                 .background(color = appBarColor)
+                .clickable { projectPanelAction.onProjectTreeTypeClick(projectPanelState.projectTreeType) }
                 .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Project",
+                text = projectPanelState.projectTreeType.typeName,
                 color = textColor,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+            )
+
+            Image(
+                painter = painterResource(resourcePath = "icons/arrow_right.svg"),
+                contentDescription = "",
+                modifier = Modifier.size(10.dp)
+                    .rotate(90f)
             )
         }
 
@@ -77,16 +87,15 @@ fun ProjectPanel(
                 state = verticalScrollState,
             ) {
                 itemsIndexed(
-                    items = folderList,
+                    items = projectPanelState.showedTreeList,
                     key = { index, item ->
                         item.parent + item.name
                     }
                 ) { index, item ->
                     ProjectItem(
                         item = item,
-                        index = index,
                         onClick = {
-                            NurseManager.clickFolderItem(it)
+                            projectPanelAction.onFileItemClick(it)
                         }
                     )
                 }
@@ -97,9 +106,8 @@ fun ProjectPanel(
 
 @Composable
 private fun ProjectItem(
-    item: FolderItemInfo,
-    index: Int,
-    onClick: (FolderItemInfo) -> Unit
+    item: FileItemInfo,
+    onClick: (FileItemInfo) -> Unit
 ) {
 
     Row(
@@ -144,7 +152,7 @@ private fun ProjectItem(
                         "icons/file_type_image.svg"
                     } else if (item.name.endsWith(".xml")) {
                         "icons/file_type_xml.svg"
-                    }  else if (item.name.endsWith(".smali")) {
+                    } else if (item.name.endsWith(".smali")) {
                         "icons/file_type_smali.svg"
                     } else {
                         "icons/file_type_unknown.svg"
@@ -156,14 +164,16 @@ private fun ProjectItem(
         )
 
         Text(
-            text = item.name,
+            text = item.showName.ifEmpty {
+                item.name
+            },
             color = textColor,
-            fontSize = if (index == 0) {
+            fontSize = if (item.isRootFile) {
                 16.sp
             } else {
                 14.sp
             },
-            fontWeight = if (index == 0) {
+            fontWeight = if (item.isRootFile) {
                 FontWeight.Bold
             } else {
                 FontWeight.Normal

@@ -13,53 +13,67 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.vsloong.apknurse.manager.NurseManager
+import com.vsloong.apknurse.viewmodel.LeftBarViewModel
 import com.vsloong.apknurse.ui.*
 import com.vsloong.apknurse.ui.drag.DropHerePanel
 import com.vsloong.apknurse.ui.panel.EditPanel
 import com.vsloong.apknurse.ui.panel.ProjectPanel
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
-import com.vsloong.apknurse.ui.theme.randomComposeColor
-import com.vsloong.apknurse.utils.logger
+import com.vsloong.apknurse.viewmodel.DragViewModel
+import com.vsloong.apknurse.viewmodel.EditorViewModel
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
+val appModule = module {
 
-fun main() = application {
+    factory {
 
-    val windowState = rememberWindowState(
-        placement = WindowPlacement.Floating,
-        isMinimized = false,
-        position = WindowPosition.PlatformDefault,
-        size = DpSize(1440.dp, 900.dp),
-    )
-
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "",
-        icon = painterResource("icons/app_icon.svg"),
-        transparent = true,
-        undecorated = true,
-        state = windowState
-    ) {
-        AppFrame(
-            composeWindow = window,
-            onMinClick = {
-                windowState.isMinimized = true
-            },
-            onMaxOrNormalClick = {
-                windowState.isMinimized = false
-            },
-            onExitClick = {
-                exitApplication()
-            },
-            onWindowPositionChange = { offsetX, offsetY ->
-                windowState.position = WindowPosition(
-                    x = windowState.position.x + offsetX.dp,
-                    y = windowState.position.y + offsetY.dp,
-                )
-            }
-        )
     }
 }
 
+fun main() = run {
+    startKoin {
+        modules(appModule)
+    }
+
+    application {
+
+        val windowState = rememberWindowState(
+            placement = WindowPlacement.Floating,
+            isMinimized = false,
+            position = WindowPosition.PlatformDefault,
+            size = DpSize(1440.dp, 900.dp),
+        )
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "",
+            icon = painterResource("icons/app_icon.svg"),
+            transparent = true,
+            undecorated = true,
+            state = windowState
+        ) {
+            AppFrame(
+                composeWindow = window,
+                onMinClick = {
+                    windowState.isMinimized = true
+                },
+                onMaxOrNormalClick = {
+                    windowState.isMinimized = false
+                },
+                onExitClick = {
+                    exitApplication()
+                },
+                onWindowPositionChange = { offsetX, offsetY ->
+                    windowState.position = WindowPosition(
+                        x = windowState.position.x + offsetX.dp,
+                        y = windowState.position.y + offsetY.dp,
+                    )
+                }
+            )
+        }
+    }
+}
 
 /**
  * 将应用的UI规划为几个大部分
@@ -71,7 +85,9 @@ fun AppFrame(
     onMaxOrNormalClick: () -> Unit,
     onExitClick: () -> Unit,
     onWindowPositionChange: (Float, Float) -> Unit,
-    editContent: String = NurseManager.codeEditContent.value
+    leftBarViewModel: LeftBarViewModel = NurseManager.leftBarViewModel,
+    dragViewModel: DragViewModel = NurseManager.dragViewModel,
+    editorViewModel: EditorViewModel = NurseManager.editorViewModel
 ) {
     MaterialTheme {
         Column(
@@ -97,10 +113,8 @@ fun AppFrame(
 
                 // 左侧功能栏
                 LeftBar(
-                    folderSelected = NurseManager.showProjectPanel.value,
-                    onFolderClick = {
-                        NurseManager.showProjectPanel.value = !NurseManager.showProjectPanel.value
-                    }
+                    leftBarAction = leftBarViewModel.leftBarAction,
+                    leftBarState = leftBarViewModel.leftBarState.value
                 )
 
                 Column(
@@ -114,18 +128,18 @@ fun AppFrame(
                     ) {
 
                         // 工程项目结构区域
-                        if (NurseManager.showProjectPanel.value) {
+                        if (leftBarViewModel.leftBarState.value.projectOn) {
                             ProjectPanel(modifier = Modifier.width(320.dp))
                         }
 
-                        if (editContent.isEmpty()) {
+                        if (editorViewModel.codeEditContent.value.isEmpty()) {
                             // 拖动文件到此
                             DropHerePanel(
                                 modifier = Modifier.fillMaxSize()
                                     .weight(1f),
                                 composeWindow = composeWindow,
                                 onFileDrop = {
-                                    NurseManager.onDragFile(it)
+                                    dragViewModel.dragAction.onFileDrop
                                 }
                             )
                         } else {
@@ -135,7 +149,7 @@ fun AppFrame(
                                     .weight(1f)
                                     .background(color = appBackgroundColor)
                                     .padding(2.dp),
-                                editContent = editContent
+                                editContent = editorViewModel.codeEditContent.value
                             )
                         }
                     }

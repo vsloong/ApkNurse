@@ -17,8 +17,11 @@ repositories {
 dependencies {
     // 多模匹配算法aho-corasick
     commonMainImplementation("com.hankcs:aho-corasick-double-array-trie:1.2.2")
-}
 
+    // 依赖注入
+    commonMainImplementation("io.insert-koin:koin-core:3.4.0")
+
+}
 
 kotlin {
     jvm {

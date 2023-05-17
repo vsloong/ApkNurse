@@ -12,10 +12,12 @@ import androidx.compose.runtime.Stable
  * @param depth 当前文件夹的深度
  */
 @Stable
-data class FolderItemInfo(
-    val parent: String, // 父文件夹路径
-    val name: String,
+data class FileItemInfo(
+    val parent: String,             // 父文件夹路径
+    val name: String,               // 真实的文件名
+    val showName: String = "",      // 对外展示的文件名（默认空，则展示name,不为空则展示）
     val isDir: Boolean,
     var selected: Boolean = false,
-    var depth: Int = 0
+    var depth: Int = 0,
+    val isRootFile: Boolean, // 是否是根文件夹
 )

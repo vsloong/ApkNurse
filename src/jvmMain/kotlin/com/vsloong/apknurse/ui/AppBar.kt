@@ -8,6 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.vsloong.apknurse.bean.action.LeftBarAction
+import com.vsloong.apknurse.bean.state.LeftBarState
 import com.vsloong.apknurse.ui.theme.appBarColor
 import com.vsloong.apknurse.ui.theme.appBarSize
 import com.vsloong.apknurse.ui.theme.appBottomBarSize
@@ -71,8 +73,8 @@ fun BottomBar() {
 
 @Composable
 fun LeftBar(
-    onFolderClick: () -> Unit = {},
-    folderSelected: Boolean,
+    leftBarAction: LeftBarAction,
+    leftBarState: LeftBarState
 ) {
     Column(
         modifier = Modifier.fillMaxHeight()
@@ -84,8 +86,8 @@ fun LeftBar(
     ) {
         BarMenu(
             iconPath = "icons/bar_left_folder.svg",
-            selected = folderSelected,
-            onClick = onFolderClick,
+            selected = leftBarState.projectOn,
+            onClick = leftBarAction.clickProject,
         )
     }
 }
