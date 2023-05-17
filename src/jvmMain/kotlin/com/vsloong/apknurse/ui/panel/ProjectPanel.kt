@@ -159,7 +159,7 @@ private fun ProjectItem(
             text = item.name,
             color = textColor,
             fontSize = if (index == 0) {
-                18.sp
+                16.sp
             } else {
                 14.sp
             },

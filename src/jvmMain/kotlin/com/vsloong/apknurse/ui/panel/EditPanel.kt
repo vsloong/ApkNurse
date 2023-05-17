@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.*
@@ -16,10 +17,17 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
+import com.hankcs.algorithm.AhoCorasickDoubleArrayTrie
+import com.vsloong.apknurse.keywordList
 import com.vsloong.apknurse.ui.scroll.ScrollPanel
 import com.vsloong.apknurse.ui.theme.codeTextColor
+import java.util.TreeMap
 
 
+/**
+ * 编辑面板
+ * 预览java、smali代码，支持java关键字高亮显示
+ */
 @Composable
 fun EditPanel(
     modifier: Modifier,
@@ -59,47 +67,8 @@ fun EditPanel(
                 .verticalScroll(verticalScrollState)
                 .horizontalScroll(horizontalScrollState),
             onValueChange = {},
-//            visualTransformation = ColorizeCodeVisualTransformation()
+            visualTransformation = com.vsloong.apknurse.manager.transfer.JavaKeywordVisualTransformation
         )
 
-    }
-}
-
-
-class ColorizeCodeVisualTransformation : VisualTransformation {
-    override fun filter(text: AnnotatedString): TransformedText {
-        val builder = AnnotatedString.Builder()
-        val inputText = text.text
-
-        var startIndex = 0
-        var endIndex = 0
-
-        while (endIndex < inputText.length) {
-            endIndex = inputText.indexOfAny(charArrayOf(' ', ','), startIndex)
-
-            if (endIndex == -1) {
-                endIndex = inputText.length
-            }
-
-            val word = inputText.substring(startIndex, endIndex)
-
-            val color = when (word) {
-                "hello" -> Color.Red
-                "final" -> Color.Blue
-                else -> null
-            }
-
-            if (color != null) {
-                builder.withStyle(style = SpanStyle(color = color)) {
-                    append(inputText.substring(startIndex, endIndex))
-                }
-            }
-
-
-            startIndex = endIndex
-            endIndex++
-        }
-
-        return TransformedText(builder.toAnnotatedString(), OffsetMapping.Identity)
     }
 }

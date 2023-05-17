@@ -14,6 +14,12 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+dependencies {
+    // 多模匹配算法aho-corasick
+    commonMainImplementation("com.hankcs:aho-corasick-double-array-trie:1.2.2")
+}
+
+
 kotlin {
     jvm {
         jvmToolchain(11)
