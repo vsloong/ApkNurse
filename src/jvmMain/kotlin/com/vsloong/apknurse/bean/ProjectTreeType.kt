@@ -1,9 +1,9 @@
 package com.vsloong.apknurse.bean
 
 /**
- * 工程数的类型
+ * 工程树的类型
  */
-enum class ProjectTreeType(val typeName: String) {
-    PROJECT("Project"),
-    PACKAGES("Packages")
+sealed class ProjectTreeType {
+    class PROJECT(val name: String = "Project") : ProjectTreeType()
+    class PACKAGES(val name: String = "Packages") : ProjectTreeType()
 }

@@ -41,7 +41,7 @@ class ProjectPanelViewModel {
             clickFileItem(it)
         },
         onProjectTreeTypeClick = { oldType ->
-            if (oldType == ProjectTreeType.PROJECT) {
+            if (oldType is ProjectTreeType.PROJECT) {
                 createPackagesTree()
             } else {
                 createProjectTree()
@@ -83,7 +83,7 @@ class ProjectPanelViewModel {
 
         // 切换为project模式
         projectPanelState.value = ProjectPanelState(
-            projectTreeType = ProjectTreeType.PROJECT,
+            projectTreeType = ProjectTreeType.PROJECT(),
             showedTreeList = if (cachedProjectTreeList.isEmpty()) {
                 projectTreeList.filter {
                     it.isRootFile
@@ -147,7 +147,7 @@ class ProjectPanelViewModel {
 
         // 切换为packages模式
         projectPanelState.value = ProjectPanelState(
-            projectTreeType = ProjectTreeType.PACKAGES,
+            projectTreeType = ProjectTreeType.PACKAGES(),
             showedTreeList = if (cachedPackagesTreeList.isEmpty()) {
                 packagesTreeList.filter {
                     it.isRootFile
@@ -228,21 +228,28 @@ class ProjectPanelViewModel {
      * 获取文件的字符串信息
      */
     private fun createCodeEditString(item: FileItemInfo) {
-        val codeFile = File(item.parent, item.name)
+        val selectedFile = File(item.parent, item.name)
 
-        if (!codeFile.isFile) {
-            logger("Not a file : ${codeFile.absolutePath}")
+        if (!selectedFile.isFile) {
+            logger("Not a file : ${selectedFile.absolutePath}")
             return
         }
 
-        val fileName = codeFile.name
+        val fileName = selectedFile.name
 
-        if (fileName.endsWith(".java") ||
-            fileName.endsWith(".xml") ||
-            fileName.endsWith(".smali")
+        if (fileName.endsWith(".java")
+            || fileName.endsWith(".xml")
+            || fileName.endsWith(".smali")
         ) {
-            NurseManager.showCode(codeFile.readText(charset = Charsets.UTF_8))
+            NurseManager.showCode(selectedFile.readText(charset = Charsets.UTF_8))
+        } else if (fileName.endsWith(".png")
+            || fileName.endsWith(".jpg")
+            || fileName.endsWith(".jpeg")
+            || fileName.endsWith(".webp")
+        ) {
+            NurseManager.showImage(imagePath = selectedFile.absolutePath)
         }
+
     }
 
     /**

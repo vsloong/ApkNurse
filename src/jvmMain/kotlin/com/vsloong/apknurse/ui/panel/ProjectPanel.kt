@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vsloong.apknurse.bean.FileItemInfo
+import com.vsloong.apknurse.bean.ProjectTreeType
 import com.vsloong.apknurse.bean.action.ProjectPanelAction
 import com.vsloong.apknurse.bean.state.ProjectPanelState
 import com.vsloong.apknurse.manager.NurseManager
@@ -52,7 +53,15 @@ fun ProjectPanel(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = projectPanelState.projectTreeType.typeName,
+                text = when (projectPanelState.projectTreeType) {
+                    is ProjectTreeType.PROJECT -> {
+                        (projectPanelState.projectTreeType as ProjectTreeType.PROJECT).name
+                    }
+
+                    is ProjectTreeType.PACKAGES -> {
+                        (projectPanelState.projectTreeType as ProjectTreeType.PACKAGES).name
+                    }
+                },
                 color = textColor,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,

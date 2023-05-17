@@ -6,6 +6,6 @@ import com.vsloong.apknurse.bean.ProjectTreeType
 
 @Stable
 data class ProjectPanelState(
-    var projectTreeType: ProjectTreeType = ProjectTreeType.PROJECT,
+    var projectTreeType: ProjectTreeType = ProjectTreeType.PROJECT(),
     var showedTreeList: List<FileItemInfo> = mutableListOf()
 )

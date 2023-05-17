@@ -12,11 +12,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import com.vsloong.apknurse.bean.EditorType
 import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.viewmodel.LeftBarViewModel
 import com.vsloong.apknurse.ui.*
 import com.vsloong.apknurse.ui.drag.DropHerePanel
 import com.vsloong.apknurse.ui.panel.EditPanel
+import com.vsloong.apknurse.ui.panel.ImagePanel
 import com.vsloong.apknurse.ui.panel.ProjectPanel
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
 import com.vsloong.apknurse.viewmodel.DragViewModel
@@ -132,25 +134,38 @@ fun AppFrame(
                             ProjectPanel(modifier = Modifier.width(320.dp))
                         }
 
-                        if (editorViewModel.codeEditContent.value.isEmpty()) {
-                            // 拖动文件到此
-                            DropHerePanel(
-                                modifier = Modifier.fillMaxSize()
-                                    .weight(1f),
-                                composeWindow = composeWindow,
-                                onFileDrop = {
-                                    dragViewModel.dragAction.onFileDrop
-                                }
-                            )
-                        } else {
-                            // 代码编辑区域
-                            EditPanel(
-                                modifier = Modifier.fillMaxSize()
-                                    .weight(1f)
-                                    .background(color = appBackgroundColor)
-                                    .padding(2.dp),
-                                editContent = editorViewModel.codeEditContent.value
-                            )
+                        when (editorViewModel.editorType.value) {
+                            is EditorType.NONE -> {
+                                // 拖动文件到此
+                                DropHerePanel(
+                                    modifier = Modifier.fillMaxSize()
+                                        .weight(1f),
+                                    composeWindow = composeWindow,
+                                    onFileDrop = {
+                                        dragViewModel.dragAction.onFileDrop
+                                    }
+                                )
+                            }
+                            is EditorType.TEXT -> {
+                                // 代码编辑区域
+                                EditPanel(
+                                    modifier = Modifier.fillMaxSize()
+                                        .weight(1f)
+                                        .background(color = appBackgroundColor)
+                                        .padding(2.dp),
+                                    editContent = (editorViewModel.editorType.value as EditorType.TEXT).codeString
+                                )
+                            }
+                            is EditorType.IMAGE -> {
+                                // 图片编辑区域
+                                ImagePanel(
+                                    modifier = Modifier.fillMaxSize()
+                                        .weight(1f)
+                                        .background(color = appBackgroundColor)
+                                        .padding(2.dp),
+                                    content = (editorViewModel.editorType.value as EditorType.IMAGE).imagePath
+                                )
+                            }
                         }
                     }
                     // 底部的控制台区域

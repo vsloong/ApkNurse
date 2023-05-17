@@ -25,7 +25,7 @@ import java.util.TreeMap
 
 
 /**
- * 编辑面板
+ * 代码编辑的面板
  * 预览java、smali代码，支持java关键字高亮显示
  */
 @Composable
