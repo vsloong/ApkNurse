@@ -25,6 +25,7 @@ import com.vsloong.apknurse.manager.NurseManager
 import com.vsloong.apknurse.ui.scroll.ScrollPanel
 import com.vsloong.apknurse.ui.theme.appBarColor
 import com.vsloong.apknurse.ui.theme.textColor
+import com.vsloong.apknurse.utils.getResByFileItem
 
 /**
  * Project 面板相关UI
@@ -148,26 +149,7 @@ private fun ProjectItem(
         }
 
         Image(
-            painter = painterResource(
-                resourcePath = if (item.isDir) {
-                    "icons/file_type_folder.svg"
-                } else {
-                    if (item.name.endsWith(".java")) {
-                        "icons/file_type_java.svg"
-                    } else if (item.name.endsWith(".png")
-                        || item.name.endsWith(".webp")
-                        || item.name.endsWith(".jpg")
-                    ) {
-                        "icons/file_type_image.svg"
-                    } else if (item.name.endsWith(".xml")) {
-                        "icons/file_type_xml.svg"
-                    } else if (item.name.endsWith(".smali")) {
-                        "icons/file_type_smali.svg"
-                    } else {
-                        "icons/file_type_unknown.svg"
-                    }
-                }
-            ),
+            painter = painterResource(resourcePath = getResByFileItem(item)),
             contentDescription = "",
             modifier = Modifier.size(16.dp)
         )

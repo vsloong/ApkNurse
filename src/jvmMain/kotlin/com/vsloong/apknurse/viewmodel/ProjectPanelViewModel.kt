@@ -235,21 +235,7 @@ class ProjectPanelViewModel {
             return
         }
 
-        val fileName = selectedFile.name
-
-        if (fileName.endsWith(".java")
-            || fileName.endsWith(".xml")
-            || fileName.endsWith(".smali")
-        ) {
-            NurseManager.showCode(selectedFile.readText(charset = Charsets.UTF_8))
-        } else if (fileName.endsWith(".png")
-            || fileName.endsWith(".jpg")
-            || fileName.endsWith(".jpeg")
-            || fileName.endsWith(".webp")
-        ) {
-            NurseManager.showImage(imagePath = selectedFile.absolutePath)
-        }
-
+        NurseManager.viewFile(item)
     }
 
     /**

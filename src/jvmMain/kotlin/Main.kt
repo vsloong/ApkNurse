@@ -2,6 +2,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +21,9 @@ import com.vsloong.apknurse.ui.drag.DropHerePanel
 import com.vsloong.apknurse.ui.panel.EditPanel
 import com.vsloong.apknurse.ui.panel.ImagePanel
 import com.vsloong.apknurse.ui.panel.ProjectPanel
+import com.vsloong.apknurse.ui.tab.EditorTitleTab
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
+import com.vsloong.apknurse.ui.theme.appBarColor
 import com.vsloong.apknurse.viewmodel.DragViewModel
 import com.vsloong.apknurse.viewmodel.EditorViewModel
 import org.koin.core.context.startKoin
@@ -134,6 +137,7 @@ fun AppFrame(
                             ProjectPanel(modifier = Modifier.width(320.dp))
                         }
 
+
                         when (editorViewModel.editorType.value) {
                             is EditorType.NONE -> {
                                 // 拖动文件到此
@@ -142,29 +146,55 @@ fun AppFrame(
                                         .weight(1f),
                                     composeWindow = composeWindow,
                                     onFileDrop = {
-                                        dragViewModel.dragAction.onFileDrop
+                                        dragViewModel.dragAction.onFileDrop(it)
                                     }
                                 )
                             }
-                            is EditorType.TEXT -> {
-                                // 代码编辑区域
-                                EditPanel(
-                                    modifier = Modifier.fillMaxSize()
-                                        .weight(1f)
-                                        .background(color = appBackgroundColor)
-                                        .padding(2.dp),
-                                    editContent = (editorViewModel.editorType.value as EditorType.TEXT).codeString
-                                )
-                            }
-                            is EditorType.IMAGE -> {
-                                // 图片编辑区域
-                                ImagePanel(
-                                    modifier = Modifier.fillMaxSize()
-                                        .weight(1f)
-                                        .background(color = appBackgroundColor)
-                                        .padding(2.dp),
-                                    content = (editorViewModel.editorType.value as EditorType.IMAGE).imagePath
-                                )
+
+                            else -> {
+
+                                Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+
+                                    // 编辑区的标题栏
+                                    EditorTitleTab(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(40.dp)
+                                            .background(color = Color.Transparent),
+                                        editorTitleTabState = editorViewModel.editorTitleTabState.value,
+                                        editorTitleTabAction = editorViewModel.editorTitleTabAction
+                                    )
+
+                                    Divider(modifier = Modifier.fillMaxWidth().height(1.dp), color = appBarColor)
+
+                                    when (editorViewModel.editorType.value) {
+                                        is EditorType.TEXT -> {
+                                            // 代码编辑区域
+                                            EditPanel(
+                                                modifier = Modifier.fillMaxSize()
+                                                    .weight(1f)
+                                                    .background(color = appBackgroundColor)
+                                                    .padding(2.dp),
+                                                editContent = (editorViewModel.editorType.value as EditorType.TEXT).codeString
+                                            )
+                                        }
+
+                                        is EditorType.IMAGE -> {
+                                            // 图片编辑区域
+                                            ImagePanel(
+                                                modifier = Modifier.fillMaxSize()
+                                                    .weight(1f)
+                                                    .background(color = appBackgroundColor)
+                                                    .padding(2.dp),
+                                                content = (editorViewModel.editorType.value as EditorType.IMAGE).imagePath
+                                            )
+                                        }
+
+                                        else -> {
+
+                                        }
+                                    }
+
+                                }
                             }
                         }
                     }
