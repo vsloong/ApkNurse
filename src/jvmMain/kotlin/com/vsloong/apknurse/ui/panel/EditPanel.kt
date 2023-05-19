@@ -8,20 +8,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
-import com.hankcs.algorithm.AhoCorasickDoubleArrayTrie
-import com.vsloong.apknurse.keywordList
+import com.vsloong.apknurse.manager.transfer.JavaKeywordVisualTransformation
 import com.vsloong.apknurse.ui.scroll.ScrollPanel
 import com.vsloong.apknurse.ui.theme.codeTextColor
-import java.util.TreeMap
 
 
 /**
@@ -31,7 +26,8 @@ import java.util.TreeMap
 @Composable
 fun EditPanel(
     modifier: Modifier,
-    editContent: String
+    textContent: String,
+    textType: String
 ) {
 
     val verticalScrollState = rememberScrollState()
@@ -44,7 +40,7 @@ fun EditPanel(
     ) {
 
         TextField(
-            value = editContent,
+            value = textContent,
             colors = TextFieldDefaults.textFieldColors(
                 textColor = codeTextColor,
                 focusedIndicatorColor = Color.Transparent,
@@ -59,15 +55,18 @@ fun EditPanel(
             textStyle = TextStyle(
                 color = codeTextColor,
                 fontSize = 16.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.1.sp,
+                lineHeight = 24.sp,
                 fontFamily = FontFamily.Monospace
             ),
             modifier = Modifier.fillMaxSize()
                 .verticalScroll(verticalScrollState)
                 .horizontalScroll(horizontalScrollState),
             onValueChange = {},
-            visualTransformation = com.vsloong.apknurse.manager.transfer.JavaKeywordVisualTransformation
+            visualTransformation = if (textType == "java") {
+                JavaKeywordVisualTransformation
+            } else {
+                VisualTransformation.None
+            }
         )
 
     }

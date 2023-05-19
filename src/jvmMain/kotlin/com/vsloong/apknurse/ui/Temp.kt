@@ -70,7 +70,7 @@ fun AppTest(
             onClick = {
                 ioScope.launch {
                     NurseManager.createProject(
-                        File("/Users/dragon/ApkNurse/projects/com.example.composesample_1_2023_05_16_20_43_18_608")
+                        File("/Users/dragon/ApkNurse/projects/com.example.composesample_1_2023_05_19_17_09_38_871")
                     )
                 }
             }

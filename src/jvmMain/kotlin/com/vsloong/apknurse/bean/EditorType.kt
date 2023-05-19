@@ -6,6 +6,6 @@ package com.vsloong.apknurse.bean
 sealed class EditorType {
 
     object NONE : EditorType()
-    class TEXT(val codeString: String) : EditorType()
+    class TEXT(val textContent: String, val textType: String) : EditorType()
     class IMAGE(val imagePath: String) : EditorType()
 }

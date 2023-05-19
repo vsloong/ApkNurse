@@ -41,23 +41,8 @@ object NurseManager {
     /**
      * 查看文件
      */
-    fun viewFile(fileItemInfo: FileItemInfo){
+    fun viewFile(fileItemInfo: FileItemInfo) {
         editorViewModel.viewFile(fileItemInfo)
-    }
-
-    /**
-     * 点击源文件后打开代码内容
-     */
-    fun showCode(srcCode: String) {
-        editorViewModel.editorType.value = EditorType.TEXT(codeString = srcCode)
-
-    }
-
-    /**
-     * 展示图片
-     */
-    fun showImage(imagePath: String) {
-
     }
 
 }

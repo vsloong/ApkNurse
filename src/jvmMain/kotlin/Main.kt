@@ -174,7 +174,8 @@ fun AppFrame(
                                                     .weight(1f)
                                                     .background(color = appBackgroundColor)
                                                     .padding(2.dp),
-                                                editContent = (editorViewModel.editorType.value as EditorType.TEXT).codeString
+                                                textContent = (editorViewModel.editorType.value as EditorType.TEXT).textContent,
+                                                textType = (editorViewModel.editorType.value as EditorType.TEXT).textType,
                                             )
                                         }
 

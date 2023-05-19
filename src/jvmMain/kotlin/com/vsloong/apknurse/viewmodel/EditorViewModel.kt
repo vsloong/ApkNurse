@@ -52,7 +52,10 @@ class EditorViewModel {
         ) {
             updateTabItem(
                 fileItemInfo = fileItemInfo,
-                editorType = EditorType.TEXT(codeString = file.readText(charset = Charsets.UTF_8))
+                editorType = EditorType.TEXT(
+                    textContent = file.readText(charset = Charsets.UTF_8),
+                    textType = file.extension
+                )
             )
         } else if (fileName.endsWith(".png")
             || fileName.endsWith(".jpg")
