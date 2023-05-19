@@ -1,7 +1,9 @@
 package com.vsloong.apknurse.usecase
 
+import com.vsloong.apknurse.utils.logger
 import com.vsloong.apknurse.utils.runCMD
-import localDex2JarPath
+import jadx.api.JadxArgs
+import jadx.api.JadxDecompiler
 import java.io.File
 
 
@@ -10,16 +12,14 @@ import java.io.File
  */
 class DexUseCase {
 
-    private val winPrefixCMD = arrayOf("cmd", "/c", "d2j-dex2jar.bat")
-    private val unixPrefixCMD = arrayOf("./d2j-dex2jar.sh")
 
     /**
-     * 将Dex文件转换为Jar文件
+     * 将Dex文件转换为Java源文件
      * @param dexPath
      *          如果是dex文件，直接执行转换任务
      *          如果是文件夹，则遍历该文件夹下的dex文件，顺序执行转换任务
      */
-    fun dex2jar(
+    fun dex2java(
         dexPath: String,
         outDirPath: String,
     ) {
@@ -37,38 +37,35 @@ class DexUseCase {
             if (!dexFile.name.endsWith(".dex")) {
                 throw Throwable("Wrong file type, not a dex file.")
             }
-            dexFile2JarFile(dexFile, outDirPath)
+            dexFile2java(dexFile, outDirPath)
         } else if (dexFile.isDirectory) {
             dexFile
                 .listFiles { f ->
                     f.name.endsWith(".dex")
                 }
                 ?.forEach {
-                    dexFile2JarFile(it, outDirPath)
+                    dexFile2java(it, outDirPath)
                 }
         }
     }
 
     /**
-     * 将Dex文件转换为Jar文件
+     * 使用Jadx将dex文件反编译为java源文件
      */
-    private fun dexFile2JarFile(
+    private fun dexFile2java(
         dexFile: File,
-        outJarDirPath: String,
+        outDirPath: String
     ) {
-
-        val outJarName = "${dexFile.name}.jar"
-        val outJarFile = File(outJarDirPath, outJarName)
-
-        runCMD(
-            winCMD = winPrefixCMD,
-            unixCMD = unixPrefixCMD,
-            cmdSuffix = arrayOf(
-                dexFile.absolutePath,
-                "-o",
-                outJarFile.absolutePath
-            ),
-            directory = File(localDex2JarPath())
-        )
+        val jadxArgs = JadxArgs()
+        jadxArgs.setInputFile(dexFile)
+        jadxArgs.outDir = File(outDirPath)
+        try {
+            JadxDecompiler(jadxArgs).use { jadx ->
+                jadx.load()
+                jadx.save()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

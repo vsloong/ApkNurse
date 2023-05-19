@@ -36,10 +36,9 @@ class HackUseCase {
             decodeDirPath,
             "-f",
             onLine = {
-                logger("解码：${it}")
+                logger("apk tool decode : $it")
             }
         )
-        logger("解码APK完毕")
     }
 
     /**
@@ -58,9 +57,8 @@ class HackUseCase {
             "-o",
             targetApkPath,
             onLine = {
-                logger("编码：${it}")
+                logger("apk tool build : $it")
             }
         )
-        logger("重新编码APK完毕")
     }
 }

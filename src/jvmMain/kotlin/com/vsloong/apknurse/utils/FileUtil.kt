@@ -8,7 +8,6 @@ import java.io.File
  */
 // libs文件夹下的直接文件
 const val LIB_NAME_APK_TOOL = "apktool_2.7.0.jar"
-const val LIB_NAME_DEX_2_JAR = "dex2jar-2.1.zip"
 const val LIB_NAME_JD_GUI = "jd-gui-1.6.6-min.jar"
 const val LIB_NAME_PROCYON = "procyon-decompiler-0.6.0.jar"
 

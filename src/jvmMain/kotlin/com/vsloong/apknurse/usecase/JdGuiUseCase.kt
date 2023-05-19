@@ -1,5 +1,6 @@
 package com.vsloong.apknurse.usecase
 
+import com.vsloong.apknurse.utils.logger
 import com.vsloong.apknurse.utils.runCMD
 import localJdGuiJarPath
 
@@ -16,7 +17,10 @@ class JdGuiUseCase {
             "java",
             "-jar",
             localJdGuiJarPath(),
-            jarFilePath
+            jarFilePath,
+            onLine = {
+                logger("jd-gui : $it")
+            }
         )
     }
 }

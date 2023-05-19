@@ -11,7 +11,7 @@ import java.nio.charset.Charset
 fun runCMDArray(
     elements: Array<String>,
     directory: File? = null,
-    onLine: (String) -> Unit = {}
+    onLine: (String) -> Unit
 ): Int {
     return runCMD(elements = elements, directory = directory, onLine = onLine)
 }
@@ -29,7 +29,7 @@ fun runCMD(
     unixCMD: Array<String>,
     cmdSuffix: Array<String> = emptyArray(),
     directory: File? = null,
-    onLine: (String) -> Unit = {}
+    onLine: (String) -> Unit
 ): Int {
 
     val cmd = if (isWindows()) {
@@ -48,13 +48,12 @@ fun runCMD(
 fun runCMD(
     vararg elements: String,
     directory: File? = null,
-    onLine: (String) -> Unit = {}
+    onLine: (String) -> Unit
 ): Int {
     val cmdStringBuilder = StringBuilder()
     elements.forEach {
         cmdStringBuilder.append(it).append(" ")
     }
-    logger("执行cmd命令：$cmdStringBuilder")
     val process = ProcessBuilder(*elements)
         .directory(directory)
         .redirectErrorStream(true)
@@ -68,7 +67,6 @@ fun runCMD(
     var line: String?
     while (reader.readLine().also { line = it } != null) {
         line?.let {
-            logger("CMD执行输出: $line")
             onLine(it)
         }
     }

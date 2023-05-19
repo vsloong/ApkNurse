@@ -48,7 +48,7 @@ data class ApkNurseInfo(
     }
 
     /**
-     * 获取Dex文件反编译为jar文件后的文件夹
+     * 获取反编译后jar所在的文件夹
      */
     fun getDecompiledJarDirPath(): String {
         return getCurrentProjectDirPath() +
@@ -56,7 +56,7 @@ data class ApkNurseInfo(
     }
 
     /**
-     * 获取jar文件反编译为java文件后的文件夹
+     * 获取反编译后java源码所在的文件夹
      */
     fun getDecompiledJavaDirPath(): String {
         return getCurrentProjectDirPath() +

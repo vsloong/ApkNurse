@@ -47,7 +47,6 @@ class ResourceUseCase {
 
         val libList = listOf(
             "${libsPrefix}${LIB_NAME_APK_TOOL}",
-            "${libsPrefix}${LIB_NAME_DEX_2_JAR}",
             "${libsPrefix}${LIB_NAME_JD_GUI}",
             "${libsPrefix}${LIB_NAME_PROCYON}",
             "${libsPrefix}${LIB_NAME_AAPT2}",

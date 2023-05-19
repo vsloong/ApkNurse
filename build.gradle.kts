@@ -21,6 +21,13 @@ dependencies {
     // 依赖注入
     commonMainImplementation("io.insert-koin:koin-core:3.4.0")
 
+    // 解压缩
+    commonMainImplementation("org.apache.commons:commons-compress:1.22")
+
+    // jadx
+    commonMainImplementation("io.github.skylot:jadx-core:1.4.7")
+    commonMainImplementation("io.github.skylot:jadx-dex-input:1.4.7")
+    commonMainImplementation("ch.qos.logback:logback-classic:1.4.7")
 }
 
 kotlin {

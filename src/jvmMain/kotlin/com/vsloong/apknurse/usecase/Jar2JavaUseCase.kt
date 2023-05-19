@@ -1,5 +1,6 @@
 package com.vsloong.apknurse.usecase
 
+import com.vsloong.apknurse.utils.logger
 import com.vsloong.apknurse.utils.runCMD
 import localProcyonJarPath
 import java.io.File
@@ -56,7 +57,10 @@ class Jar2JavaUseCase {
             localProcyonJarPath(),
             "-o",
             outDirPath,
-            jarFile.absolutePath
+            jarFile.absolutePath,
+            onLine = {
+                logger("jar to java :$it")
+            }
         )
     }
 }

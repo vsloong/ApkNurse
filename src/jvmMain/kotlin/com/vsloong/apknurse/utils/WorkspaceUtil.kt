@@ -101,15 +101,6 @@ fun localAapt2Path(): String {
 }
 
 /**
- * 解压到本地的Dex2Jar相关文件路径
- */
-fun localDex2JarPath(): String {
-    return localLibsDirPath() +
-        File.separator + "dex2jar-2.1" +
-        File.separator + "dex-tools-2.1"
-}
-
-/**
  * 本地JD-GUI的jar包地址
  */
 fun localJdGuiJarPath(): String {

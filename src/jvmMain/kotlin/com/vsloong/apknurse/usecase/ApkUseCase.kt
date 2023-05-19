@@ -41,13 +41,6 @@ class ApkUseCase {
     }
 
     /**
-     * 使用ApkTool解码APK
-     */
-    fun decodeApk() {
-
-    }
-
-    /**
      * 从命令行输出的信息中获取apk信息
      */
     private fun getApkInfoFromLine(
