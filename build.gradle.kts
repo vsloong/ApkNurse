@@ -28,6 +28,14 @@ dependencies {
     commonMainImplementation("io.github.skylot:jadx-core:1.4.7")
     commonMainImplementation("io.github.skylot:jadx-dex-input:1.4.7")
     commonMainImplementation("ch.qos.logback:logback-classic:1.4.7")
+
+    // java文件解析
+    commonMainImplementation("com.github.javaparser:javaparser-symbol-solver-core:3.25.3")
+    commonMainImplementation("com.github.javaparser:javaparser-core:3.25.3")
+
+    // xml文件解析
+    commonMainImplementation("org.dom4j:dom4j:2.1.3")
+
 }
 
 kotlin {

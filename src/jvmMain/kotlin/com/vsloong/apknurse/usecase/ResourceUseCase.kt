@@ -50,6 +50,9 @@ class ResourceUseCase {
             "${libsPrefix}${LIB_NAME_JD_GUI}",
             "${libsPrefix}${LIB_NAME_PROCYON}",
             "${libsPrefix}${LIB_NAME_AAPT2}",
+            "${libsPrefix}${LIB_NAME_KEY_STORE}",
+            "${libsPrefix}${LIB_NAME_APK_SIGNER}",
+            "${libsPrefix}${LIB_NAME_ZIP_ALIGN}",
         )
 
         libList.forEach {

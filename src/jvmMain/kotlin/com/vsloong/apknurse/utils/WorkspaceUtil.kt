@@ -115,3 +115,26 @@ fun localProcyonJarPath(): String {
     return localLibsDirPath() +
         File.separator + LIB_NAME_PROCYON
 }
+
+/**
+ * 本地apksigner的jar包地址
+ */
+fun localApkSignerJarPath(): String {
+    return localLibsDirPath() +
+        File.separator + LIB_NAME_APK_SIGNER
+}
+
+/**
+ * 本地zipalign工具的地址
+ */
+fun localZipAlignPath(): String {
+    return localLibsDirPath() +
+        File.separator + LIB_NAME_ZIP_ALIGN
+}
+/**
+ * 本地debug签名文件地址
+ */
+fun localDebugKeyStorePath(): String {
+    return localLibsDirPath() +
+        File.separator + LIB_NAME_KEY_STORE
+}

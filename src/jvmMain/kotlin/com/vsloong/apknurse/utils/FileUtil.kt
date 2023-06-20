@@ -10,6 +10,8 @@ import java.io.File
 const val LIB_NAME_APK_TOOL = "apktool_2.7.0.jar"
 const val LIB_NAME_JD_GUI = "jd-gui-1.6.6-min.jar"
 const val LIB_NAME_PROCYON = "procyon-decompiler-0.6.0.jar"
+const val LIB_NAME_KEY_STORE = "vsloong.jks"    // debug签名文件
+const val LIB_NAME_APK_SIGNER = "apksigner.jar" // 签名工具的jar包
 
 // 注意：以下内容均为未适配Linux
 private val DIR_WIN = "win" + File.separator
@@ -24,6 +26,19 @@ val LIB_NAME_AAPT2 =
             DIR_MAC_ARM + "aapt2"
         } else {
             DIR_MAC + "aapt2"
+        }
+    } else {
+        throw Throwable("未支持的系统类型")
+    }
+
+val LIB_NAME_ZIP_ALIGN =
+    if (isWindows()) {
+        DIR_WIN + "zipalign.exe"
+    } else if (isMac()) {
+        if (isArm()) {
+            DIR_MAC_ARM + "zipalign"
+        } else {
+            DIR_MAC + "zipalign"
         }
     } else {
         throw Throwable("未支持的系统类型")
