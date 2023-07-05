@@ -24,22 +24,19 @@ import com.vsloong.apknurse.ui.panel.ProjectPanel
 import com.vsloong.apknurse.ui.tab.EditorTitleTab
 import com.vsloong.apknurse.ui.theme.appBackgroundColor
 import com.vsloong.apknurse.ui.theme.appBarColor
+import com.vsloong.apknurse.usecase.ResourceUseCase
 import com.vsloong.apknurse.viewmodel.DragViewModel
 import com.vsloong.apknurse.viewmodel.EditorViewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-val appModule = module {
 
-    factory {
-
-    }
-}
+val resourceUserCase = ResourceUseCase()
 
 fun main() = run {
-    startKoin {
-        modules(appModule)
-    }
+
+    // 先将所需的资源拷贝到本机
+    resourceUserCase.copyLibsToLocal()
 
     application {
 
